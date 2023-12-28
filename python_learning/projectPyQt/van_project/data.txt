@@ -1,0 +1,24 @@
+cities:
+Aberdeen, Warsaw, Krakow, Lublin, Kielce, Poznan, Torun,
+Zakopan, Branevo, Nitry, Bratislav, Zhiliny, Poprad, Slavyan,
+Alchev, Vinnitsy, Poltav, Postavy, Pinsk, Bangor, Bradford,
+Bristol, Carlisly, Chester, Durham
+
+people_names:
+Olivia, Ava, Amelia, Emily, Jessica, Isla, Isabella,
+Poppy, Mia, Sophie, Lily, Ruby, Evie, Grace, Ella,
+Samuel, Jack, Joseph, Harry, Alfie, Jacob, Thomas, 
+Charlie, Oscar, James, William, Joshua, George
+
+people_surnames:
+Adamson, Aldridge, Evans, Johnson, Davies, Wilson,
+Parson, Ellington, Flatcher, Gilbert, Smith,
+Brown, Taylor, Walker, Harris, Davis, Lewis
+
+first_word:
+The Resident, Royal, The Montague, Forest Park, Beechwood,
+The Hideaway, The, Shangri-La, Pan Pacific, One, Brown's
+
+second_word:
+Hotel, Guesthouse, Covent Garden, Lancaster, Victoria,
+Country Hotel & Inn, Manor House, House B&B

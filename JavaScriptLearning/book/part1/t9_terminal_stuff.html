@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>>Console Stuff</title>
+    <style>
+      #container {
+        padding: 40px;
+      }
+
+      #myButton {
+        font-family: sans-serif;
+        font-size: 24px;
+        font-weight: lighter;
+        background-color: #fff;
+        border: 1px solid #000;
+        padding: 15px;
+      }
+
+      #myButton:hover {
+        background-color: aliceblue;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container">
+      <button id="myButton">click me</button>
+
+      <script>
+        let myButton = document.querySelector("#myButton");
+        myButton.addEventListener("click", doSomething, false);
+
+        function doSomething(e) {
+          console.log("We clicked on: " + e.target.id);
+        }
+      </script>
+    </div>
+  </body>
+</html>

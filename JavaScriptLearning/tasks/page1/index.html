@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Test</title>
+    <style>
+      * {
+        border: 0;
+        padding: 0;
+        margin: 0;
+        font-size: 20px;
+        font-family: "Comic Sans MS", "Comic Sans", "cursive", sans-serif;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        display: flex;
+      }
+
+      .container {
+        border: 1vh solid black;
+        height: 95%;
+        width: 95%;
+        margin: auto;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: azure;
+      }
+
+      .container > * {
+        width: fit-content;
+        margin: auto;
+      }
+
+      .container > h1 {
+        font-size: calc(1em + 2vw);
+      }
+
+      #count-el {
+        font-size: calc(1em + 2vw);
+        margin-top: 2%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>People entered:</h1>
+      <h2 id="count-el">0</h2>
+      <script>
+        document.getElementById("count-el");
+      </script>
+    </div>
+  </body>
+</html>

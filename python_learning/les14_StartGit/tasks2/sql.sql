@@ -1,0 +1,10 @@
+-- ID, название сорта, степень обжарки, молотый/в зернах, описание вкуса, цена, объем упаковки
+-- CREATE TABLE IF NOT EXISTS COFFE (
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     variety_name TEXT,
+--     degree_of_roasting TEXT,
+--     ground_in_grains TEXT,
+--     taste_description TEXT,
+--     price INTEGER,
+--     package_volume package volume
+-- )

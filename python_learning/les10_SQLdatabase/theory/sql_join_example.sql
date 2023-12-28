@@ -1,0 +1,64 @@
+-- CREATE TABLE USERS (
+--     user_id INTEGER NOT NULL,
+--     name VARCHAR(15) NOT NULL DEFAULT 'unknoun',
+--     email NOT NULL DEFAULT 'not email',
+--     PRIMARY KEY (user_id AUTOINCREMENT)
+-- );
+
+-- INSERT INTO USERS (name, email)
+-- VALUES ('Kimberlee', 'kimberlee32@gmail.com'),
+--     ('Olivia', 'olivia65@yahoo.com'),
+--     ('Goodwin', 'goodwin@yahoo.com'),
+--     ('Ina', 'ina77@hotmail.com'),
+--     ('Ariah', 'ariah@yahoo.com'),
+--     ('Otis', 'otis@gmail.com'),
+--     ('Roselyn', 'roselyn73@gmail.com'),
+--     ('Anabelle', 'anabelle65@yahoo.com'),
+--     ('Ewart', 'ewart778@hotmail.com'),
+--     ('Case', 'case@yahoo.com'),
+--     ('Jeptha', 'jeptha@yahoo.com'),
+--     ('Russel', 'russel@gmail.com'),
+--     ('Amberlynn', 'amberlynn@hotmail.com'),
+--     ('Errol', 'errol@gmail.com'),
+--     ('Eveleen', 'eveleen@yahoo.com')
+
+-- CREATE TABLE ORDERS (
+--     order_id INTEGER NOT NULL,
+--     user_id INTEGER,
+--     product VARCHAR(30),
+--     PRIMARY KEY (order_id AUTOINCREMENT)
+-- );
+
+-- INSERT INTO ORDERS (user_id, product)
+-- VALUES (4, 'car'),
+-- (14, 'nails'),
+-- (7, 'cucumber'),
+-- (9, 'soda'),
+-- (13, 'can'),
+-- (3, 'bed'),
+-- (10, 'key'),
+-- (8, 'pizzas'),
+-- (11, 'invention'),
+-- (12, 'clothes'),
+-- (2, 'harbor'),
+-- (6, 'sand'),
+-- (7, 'cucumber'),
+-- (8, 'bit'),
+-- (3, 'advertisement'),
+-- (12, 'clothes'),
+-- (6, 'sand'),
+-- (15, 'deer'),
+-- (1, 'sound'),
+-- (10, 'mist'),
+-- (1, 'back'),
+-- (11, 'laborer'),
+-- (5, 'water'),
+-- (15, 'calculator'),
+-- (2, 'cats'),
+-- (5, 'yak'),
+-- (9, 'soda'),
+-- (13, 'can')
+
+SELECT USERS.user_id, name, email, product, order_id  FROM USERS INNER JOIN ORDERS ON  ORDERS.user_id = USERS.user_id
+
+-- Вся штука сверху даёт таблицу 
