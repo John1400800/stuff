@@ -31,16 +31,13 @@ int main(void) {
 static char allocbuf[ALLOCSIZE];
 static char *allocp = allocbuf;
 
-// 
 char *alloc(int n) {
-    if (allocbuf + ALLOCSIZE - allocp >= n) {
-        allocp += n;
-        return allocp - n;
-    } else 
-        return 0;
+    if (allocp - allocbuf + n <= ALLOCSIZE)
+        return (allocp += n) - n;
+    return NULL;
 }
 
 void afree(char *p) {
-    if (p >= allocbuf && p < allocbuf + ALLOCSIZE) 
+    if (p >= allocbuf && p < allocbuf + ALLOCSIZE)
         allocp = p;
 }
