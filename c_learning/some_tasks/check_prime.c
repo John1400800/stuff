@@ -45,7 +45,7 @@ int is_prime(unsigned n) {
 
 int main(void) {
     char buff[MAXLINE + 1];
-    while (1) {
+    for(;;) {
         get_line(buff, MAXLINE);
         if (!is_valid(buff)) {
             printf("try again: ");

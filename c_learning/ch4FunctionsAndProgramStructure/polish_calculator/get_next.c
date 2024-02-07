@@ -20,7 +20,7 @@ char get_next(char *buff) {
     unsigned i = 0;
     char type = UNKN;
 
-    while (1)
+    for (;;)
     {
         if (prevch == ' ') {
             prevch = getchar();

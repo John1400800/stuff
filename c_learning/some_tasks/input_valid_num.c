@@ -59,7 +59,7 @@ unsigned get_line(char *buff_ascii_array, unsigned lim) {
 
 int input_valid_num(char *ascii_array, unsigned lim) {
     int is_neg, num;
-    while (1) {
+    for (;;) {
         get_line(ascii_array, lim);
         is_neg = is_negative(ascii_array);
         num = ascii_to_unsigned(ascii_array);

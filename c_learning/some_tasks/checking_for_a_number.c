@@ -61,7 +61,7 @@ int main() {
     float num;
 
     printf("enter a number:\n");
-    while (1) {
+    for (;;) {
         get_line(s, MAX_LENGTH);
         if (is_num(s, 1, 1)) {
             break;

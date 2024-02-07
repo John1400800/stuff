@@ -12,7 +12,7 @@ unsigned btou(char *s, unsigned base) {
         }
         ++i;
     }
-    while (1) {
+    for(;;) {
         if (s[i] >= '0' && s[i] <= (base < 10 ? '0' + base - 1 : '9')) {
             res = res * base + (unsigned)(s[i] - '0');
         } else if (s[i] >= 'a' && s[i] <= ('a' + base - 11)) {
