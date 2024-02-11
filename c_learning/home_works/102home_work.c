@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include <time.h>
 #include <stdlib.h> 
 
@@ -8,20 +9,29 @@ typedef enum {CHAR, INT, FLOAT, DOUBLE} Type;
 #define NULL ((void *)0)
 #endif
 
+#ifndef isdigit
+#define isdigit(c) ((c) >= '0' && (c) <= '9')
+#endif
+#ifndef isspace
+#define isspace(c) (((c)>9 && (c)<=13) || (c)==32)
+#endif
+
+#define floor(n, accur) ((double)(int)((n)*pow(10, (accur)))/pow(10, accur))
 #define frand(low, high) ((low)+(double)rand()/RAND_MAX*((high)-(low)))
-#define init_arr(arr, size, low, high)                                         \
+#define init_rfarr(arr, size, accur, low, high)                                \
     do {                                                                       \
         int i;                                                                 \
-        for (i=0; i<(size); ++i)                                               \
-            (arr)[i] = rand()%2 ? frand((low),(high)) : 0;                     \
+        for (i = 0; i < (size); ++i)                                           \
+            arr[i] = floor(frand((low), (high)), accur);                       \
     } while (0)
 
-#define print_farr(arr, size)                                                  \
+#define print_farr(arr, size, accur)                                           \
     do {                                                                       \
         int i;                                                                 \
         printf(#arr ":\n");                                                    \
         for (i = 0; i < (size); ++i)                                           \
-            printf(i == (size)-1 ? "% .1lf\n" : "% .1lf, ", arr[i]);           \
+            printf(i == (size)-1 ? "% ." #accur "lf\n" : "% ." #accur "lf, ",  \
+                   arr[i]);                                                    \
     } while (0)
 
 #define swap(T, a, b)                                                          \
@@ -40,24 +50,30 @@ typedef enum {CHAR, INT, FLOAT, DOUBLE} Type;
                     swap(T, (arr)[i], (arr)[i + 1]);                           \
     } while (0)
 
-#define new(T, size) (T *)alloc(sizeof(T)*(size)) /*syntax sugar*/
+#ifdef _INC_STDLIB
+#define ull unsigned long long
+#define new(T, size) (T *)malloc(sizeof(T)*(ull)(size)) /*syntax sugar*/
+#else
+#define new(T, size) (T *)alloc((int)sizeof(T)*(size)) /*syntax sugar*/
+#endif
 
-#define ARR_SIZE 10
+#define ACCUR 2
 
 void *alloc(int n);
 void free(void *ptr);
 void *find_max_abs(Type type, void *arr, int arr_size);
+int sget_int(char *start_msg, char *repeat_msg);
 
 int main(void) {
-    int i;
-    double *arr = new (double, ARR_SIZE);           // mem alloc
-    srand(time(NULL));                              // rand func init
-    init_arr(arr, ARR_SIZE, -9.9, 9.9);
-    mv_zero_to_end(double, arr, ARR_SIZE);
-    printf("arr:\n");
-    print_arr(arr, ARR_SIZE);
-    printf("abs max:\n%.1lf\n",
-           *(double *)find_max_abs(DOUBLE, arr, ARR_SIZE)); // primt abs max
+    int arr_size; // arr_size ->> n
+    double *arr =
+        new (double, (arr_size = sget_int("enter n: ", "try again"))); // mem alloc
+    srand((unsigned)time(NULL)); // init rand func
+    init_rfarr(arr, arr_size, ACCUR, -9.9, 9.9);
+    mv_zero_to_end(double, arr, arr_size);
+    print_farr(arr, arr_size, 2/*2->>ACCUR*/);
+    printf("abs max:\n%.2lf\n",
+           *(double *)find_max_abs(DOUBLE, arr, arr_size)); // primt abs max
     return 0;
 }
 
@@ -90,6 +106,31 @@ void *find_max_abs(Type type, void *arr, int arr_size) {
     return max;
 }
 #undef macro
+
+int get_int(int *res) {
+    int c, isdig, start, sign;
+    sign = 0;
+    c=getchar();
+    if (c=='+'||c=='-') {
+        sign=c=='-'?-1:1;
+        c=getchar();
+    }
+    for (*res=0, isdig=start=1; c!='\n'; c=getchar()) {
+        if (isdig && (isdig=isdigit(c)))
+            *res=*res*10+c-'0';
+        start=0;
+    }
+    *res *= *res ? (sign?sign:1) : 1;
+    return !(sign==-1 && !*res) && isdig && !start;
+}
+
+int sget_int(char *start_msg, char *repeat_msg) {
+    int res;
+    printf("%s", start_msg);
+    while (!get_int(&res))
+        printf("%s", repeat_msg);
+    return res;
+}
 
 #define ALLOCSIZE 1000
 
