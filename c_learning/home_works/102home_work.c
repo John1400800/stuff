@@ -5,6 +5,7 @@
 
 typedef enum {CHAR, INT, FLOAT, DOUBLE} Type;
 
+#define ull unsigned long long
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
@@ -22,7 +23,7 @@ typedef enum {CHAR, INT, FLOAT, DOUBLE} Type;
     do {                                                                       \
         int i;                                                                 \
         for (i = 0; i < (size); ++i)                                           \
-            arr[i] = floor(frand((low), (high)), accur);                       \
+            arr[i] = rand()%2 ? (floor(frand((low), (high)), accur)):0;        \
     } while (0)
 
 #define print_farr(arr, size, accur)                                           \
@@ -30,7 +31,8 @@ typedef enum {CHAR, INT, FLOAT, DOUBLE} Type;
         int i;                                                                 \
         printf(#arr ":\n");                                                    \
         for (i = 0; i < (size); ++i)                                           \
-            printf(i == (size)-1 ? "% ." #accur "lf\n" : "% ." #accur "lf, ",  \
+            printf((i == (size)-1) ? ("% ." #accur "lf\n")                     \
+                                   : ("% ." #accur "lf, "),                    \
                    arr[i]);                                                    \
     } while (0)
 
@@ -51,29 +53,28 @@ typedef enum {CHAR, INT, FLOAT, DOUBLE} Type;
     } while (0)
 
 #ifdef _INC_STDLIB
-#define ull unsigned long long
 #define new(T, size) (T *)malloc(sizeof(T)*(ull)(size)) /*syntax sugar*/
 #else
-#define new(T, size) (T *)alloc((int)sizeof(T)*(size)) /*syntax sugar*/
+void *alloc(ull n);
+void myfree(void *ptr);
+#define new(T, size) (T *)alloc(sizeof(T)*(ull)(size))
 #endif
 
 #define ACCUR 2
 
-void *alloc(int n);
-void free(void *ptr);
 void *find_max_abs(Type type, void *arr, int arr_size);
 int sget_int(char *start_msg, char *repeat_msg);
 
 int main(void) {
-    int arr_size; // arr_size ->> n
-    double *arr =
-        new (double, (arr_size = sget_int("enter n: ", "try again"))); // mem alloc
+    int arr_size; // arr_size <=> n
+    double *arr = new (double, arr_size = sget_int("enter n: ", "try again"));
     srand((unsigned)time(NULL)); // init rand func
     init_rfarr(arr, arr_size, ACCUR, -9.9, 9.9);
     mv_zero_to_end(double, arr, arr_size);
-    print_farr(arr, arr_size, 2/*2->>ACCUR*/);
-    printf("abs max:\n%.2lf\n",
+    print_farr(arr, arr_size, 2 /*2<=>ACCUR*/);
+    printf("abs max:\n% .2lf\n",
            *(double *)find_max_abs(DOUBLE, arr, arr_size)); // primt abs max
+    free(arr);
     return 0;
 }
 
@@ -132,12 +133,13 @@ int sget_int(char *start_msg, char *repeat_msg) {
     return res;
 }
 
+#ifndef _INC_STDLIB
 #define ALLOCSIZE 1000
 
 static char allocbuff[ALLOCSIZE];
 static char *allocp = allocbuff;
 
-void *alloc(int n) {
+void *alloc(ull n) {
     return (allocp + n <= allocbuff + ALLOCSIZE) ? (allocp+=n)-n : NULL;
 }
 
@@ -147,3 +149,4 @@ void free(void *ptr) {
     else
         printf("free: out of allocbuff");
 }
+#endif

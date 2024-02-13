@@ -27,29 +27,29 @@
                    arr[i]);                                                    \
     } while (0)
 
+#define ull unsigned long long
+#define new(T, size) ((T *)malloc(sizeof(T)*(ull)(size)))
+
 #define ACCUR 2
 
-#define new(T, size) ((T *)malloc(sizeof(T)*(size)))
-
 int sget_int(char *start_msg, char *repeat_msg);
+int get_int(int *res);
 
 int main(void) {
-    int k;
-    double arrx_size, *arrx, *arry, sq_sum;
-    arrx =
-        new (double, arrx_size = sget_int(
-                         "enter length arrx: ",
-                         "try again: ")); // inp len arr and mem alloc for arrx
+    int k, arrx_size;
+    double *arrx, *arry, sq_sum;
+    arrx = new (double, arrx_size = sget_int("enter num: ", "try again: "));
+    arry = new (double, arrx_size/2-1);            // mem alloc for arry
     init_rfarr(arrx, arrx_size, ACCUR, -9.9, 9.9); // init arr x
-
-    arry = new (double, arrx_size/2-1); // mem alloc for arry
-    for (sq_sum = k = 0; k < arrx_size/2-1; ++k) { // init arr y
+    for (sq_sum=k=0; k<arrx_size/2-1; ++k) {
         arry[k] = arrx[2*k]*arrx[2*k+1];
         sq_sum+=arry[k]*arry[k];
     }
-    print_farr(arrx, arrx_size, ACCUR);
-    print_farr(arry, arrx_size/2-1, ACCUR);
+    print_farr(arrx, arrx_size, 2);
+    print_farr(arry, arrx_size/2-1, 2);
     printf("sq summ: %lf\n", sq_sum);
+    free(arry);
+    free(arrx);
     return 0;
 }
 
