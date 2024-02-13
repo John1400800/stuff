@@ -38,10 +38,10 @@ int get_int(int *res);
 int main(void) {
     int k, arrx_size;
     double *arrx, *arry, sq_sum;
-    arrx = new (double, arrx_size = sget_int("enter num: ", "try again: "));
-    arry = new (double, arrx_size/2-1);            // mem alloc for arry
-    init_rfarr(arrx, arrx_size, ACCUR, -9.9, 9.9); // init arr x
-    for (sq_sum=k=0; k<arrx_size/2-1; ++k) {
+    arrx = new (double, arrx_size = sget_int("enter num: ", "try again: ")); // mem alloc for arrx
+    arry = new (double, arrx_size/2-1);                                      // mem alloc for arry
+    init_rfarr(arrx, arrx_size, ACCUR, -9.9, 9.9);                           // init arrx
+    for (sq_sum=k=0; k<arrx_size/2-1; ++k) {                                 // init arrx
         arry[k] = arrx[2*k]*arrx[2*k+1];
         sq_sum+=arry[k]*arry[k];
     }

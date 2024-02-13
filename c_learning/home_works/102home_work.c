@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include <stdlib.h> 
 
 typedef enum {CHAR, INT, FLOAT, DOUBLE} Type;
 
@@ -19,11 +18,11 @@ typedef enum {CHAR, INT, FLOAT, DOUBLE} Type;
 
 #define floor(n, accur) ((double)(int)((n)*pow(10, (accur)))/pow(10, accur))
 #define frand(low, high) ((low)+(double)rand()/RAND_MAX*((high)-(low)))
-#define init_rfarr(arr, size, accur, low, high)                                \
+#define init_rf_arr(arr, size, accur, low, high)                               \
     do {                                                                       \
         int i;                                                                 \
         for (i = 0; i < (size); ++i)                                           \
-            arr[i] = rand()%2 ? (floor(frand((low), (high)), accur)):0;        \
+            arr[i] = rand()%2 ? (floor(frand((low), (high)), accur)) : 0;      \
     } while (0)
 
 #define print_farr(arr, size, accur)                                           \
@@ -55,8 +54,22 @@ typedef enum {CHAR, INT, FLOAT, DOUBLE} Type;
 #ifdef _INC_STDLIB
 #define new(T, size) (T *)malloc(sizeof(T)*(ull)(size)) /*syntax sugar*/
 #else
+#define NEXT_TYPE long long
+#define RAND_TYPE short /*RAND_TYPE <= NEXT_TYPE for more "random" results */
+#define NEXT_SIZE sizeof(NEXT_TYPE)
+#define RAND_MAX_SIZE sizeof(RAND_TYPE)
+#define RAND_MAX ((1ull<<(RAND_MAX_SIZE)*8)-1)
+#define HALF_SHIFT ((NEXT_SIZE*8-RAND_MAX_SIZE*8)/2) /*narrowing the range of "NEXT" to "RANDOM"*/
+static unsigned NEXT_TYPE next = 1;
+void srand(unsigned RAND_TYPE seed) {
+    next = seed;
+} 
+void srand(unsigned RAND_TYPE seed);
+#define srand(init) srand((unsigned RAND_TYPE)(init))
+unsigned RAND_TYPE rand(void);
+
 void *alloc(ull n);
-void myfree(void *ptr);
+void free(void *ptr);
 #define new(T, size) (T *)alloc(sizeof(T)*(ull)(size))
 #endif
 
@@ -66,15 +79,14 @@ void *find_max_abs(Type type, void *arr, int arr_size);
 int sget_int(char *start_msg, char *repeat_msg);
 
 int main(void) {
-    int arr_size; // arr_size <=> n
-    double *arr = new (double, arr_size = sget_int("enter n: ", "try again"));
-    srand((unsigned)time(NULL)); // init rand func
-    init_rfarr(arr, arr_size, ACCUR, -9.9, 9.9);
-    mv_zero_to_end(double, arr, arr_size);
+    int arr_size;                                                                 // arr_size <=> n
+    srand((unsigned)time(NULL));                                                  // rand func init
+    double *arr = new (double, arr_size = sget_int("enter n: ", "try again"));    // mem alloc
+    init_rf_arr(arr, arr_size, ACCUR, -9.9, 9.9);                                 // arr init random float
+    mv_zero_to_end(double, arr, arr_size);                                        // move zero to end
     print_farr(arr, arr_size, 2 /*2<=>ACCUR*/);
-    printf("abs max:\n% .2lf\n",
-           *(double *)find_max_abs(DOUBLE, arr, arr_size)); // primt abs max
-    free(arr);
+    printf("abs max:\n% .2lf\n", *(double *)find_max_abs(DOUBLE, arr, arr_size)); // primt abs max
+    free(arr);                                                                    // free mem
     return 0;
 }
 
@@ -87,7 +99,6 @@ int main(void) {
                 maxptr = (T *)arrptr + i;                                      \
     } while (0)
 
-// TODO: return this function to its normal appearance
 void *find_max_abs(Type type, void *arr, int arr_size) {
     void *max;
     switch (type) {
@@ -134,6 +145,11 @@ int sget_int(char *start_msg, char *repeat_msg) {
 }
 
 #ifndef _INC_STDLIB
+unsigned RAND_TYPE rand(void) {
+    next = next * 1103515245 + 12345;
+    return (unsigned RAND_TYPE)(next<<HALF_SHIFT>>HALF_SHIFT>>HALF_SHIFT)%(RAND_MAX+1);
+}
+
 #define ALLOCSIZE 1000
 
 static char allocbuff[ALLOCSIZE];
