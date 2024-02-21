@@ -15,8 +15,9 @@ def near(row_f, col_f, field: list[int]) -> int:
 def display(field: list[int]) -> str:
     display = ('  — '*n_cells+'\n'
                + '\n'.join(
-                   [f"| {' | '.join(map(lambda v: ' ' if v == 0 else 'o', row))} |\n{'  — '*n_cells}"
-                    for row in field]))
+                   [f"\
+| {' | '.join(map(lambda v: ' ' if v == 0 else 'o', row))} |\n{'  — '*n_cells}"
+                       for row in field]))
     return display
 
 

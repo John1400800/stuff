@@ -1,3 +1,12 @@
+/*
+ * why you shouldn't use define:
+ *
+ * In general, using #define statements should be avoided unless there is a
+ * specific reason to use them, such as for conditional compilation or defining
+ * constants. In most cases, it is better to use functions and variables, which are
+ * more flexible and easier to work with.
+ */
+
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
