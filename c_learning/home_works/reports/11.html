@@ -7,14 +7,53 @@
 <h3 id="условие">Условие</h3>
 <p>Составить программу, которая будет вычислять сумму нужного числа n
 чле- нов данной арифметической прогрессии по любым двум ее членам,
-номера которых известны. Примечание: <span
-class="math inline"><em>a</em><sub><em>n</em></sub> = <em>a</em><sub>1</sub> + <em>d</em>(<em>n</em>−1)</span>,
-<span class="math inline">$S_{n} = \frac{ (a_{1} + a_{n}) n }{ 2
-}$</span> a1 – пер- вый член прогрессии; d – разность прогрессии; n –
-номер взятого члена, sn – сумма первых n членов арифметической
-прогрессии.</p>
+номера которых известны. Примечание: <img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20a_%7Bn%7D%3Da_%7B1%7D%2Bd%28n-1%29"
+alt="a_{n}=a_{1}+d(n-1)" title="a_{n}=a_{1}+d(n-1)"
+class="math inline" />, <img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20S_%7Bn%7D%20%3D%20%5Cfrac%7B%28a_%7B1%7D%2Ba_%7Bn%7D%29n%7D%7B2%7D"
+alt="S_{n} = \frac{(a_{1}+a_{n})n}{2}"
+title="S_{n} = \frac{(a_{1}+a_{n})n}{2}" class="math inline" /> a1 –
+первый член прогрессии; d – разность прогрессии; n – номер взятого
+члена, sn – сумма первых n членов арифметической прогрессии.</p>
 <h3 id="решение">Решение</h3>
 <h4 id="математическая-модель">Математическая модель</h4>
+<p>Пусть введенные элементы <img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20a_%7Bk%7D%2C%20a_%7Bp%7D"
+alt="a_{k}, a_{p}" title="a_{k}, a_{p}" class="math inline" /> тогда
+выржая <img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20a_%7B1%7D"
+alt="a_{1}" title="a_{1}" class="math inline" /> и <img
+style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20a_%7Bn%7D"
+alt="a_{n}" title="a_{n}" class="math inline" /> через <img
+style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20a_%7Bk%7D"
+alt="a_{k}" title="a_{k}" class="math inline" /> получим <img
+style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20a_%7B1%7D%20%3D%20a_%7Bk%7D-%28k-1%29d"
+alt="a_{1} = a_{k}-(k-1)d" title="a_{1} = a_{k}-(k-1)d"
+class="math inline" />, <img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20a_%7Bn%7D%20%3D%20a_%7B1%7D%2B%28n-1%29d%20%3D%20a_%7Bk%7D%2B%28n-k%29d"
+alt="a_{n} = a_{1}+(n-1)d = a_{k}+(n-k)d"
+title="a_{n} = a_{1}+(n-1)d = a_{k}+(n-k)d" class="math inline" />
+полставим их в общую формулу <img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Cdisplaystyle%20S_%7Bn%7D%3D%5Cfrac%7B%28a_%7B1%7D%2Ba_%7Bn%7D%29n%7D%7B2%7D%20%3D%20%5Cfrac%7B%282a_%7Bk%7D%2B%28n-2k%2B1%29d%29n%7D%7B2%7D"
+alt="S_{n}=\frac{(a_{1}+a_{n})n}{2} = \frac{(2a_{k}+(n-2k+1)d)n}{2}"
+title="S_{n}=\frac{(a_{1}+a_{n})n}{2} = \frac{(2a_{k}+(n-2k+1)d)n}{2}"
+class="math display" /> получили: <img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20S_%7Bn%7D%3D%5Cfrac%7B%282a_%7Bk%7D%2B%28n-2k%2B1%29d%29n%7D%7B2%7D"
+alt="S_{n}=\frac{(2a_{k}+(n-2k+1)d)n}{2}"
+title="S_{n}=\frac{(2a_{k}+(n-2k+1)d)n}{2}" class="math inline" />, где
+<img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?%5Cdisplaystyle%20d%20%3D%5Cbegin%7Bcases%7D%0A%5Cfrac%7Ba_%7Bk%7D-a_%7Bp%7D%7D%7Bk-p%7D%20%26%20k%20%20%5Cgeq%20p%20%5C%5C%0A%5Cfrac%7Ba_%7Bp%7D-a_%7Bk%7D%7D%7Bp-k%7D%20%26%20k%20%3C%20p%0A%5Cend%7Bcases%7D"
+alt="d =\begin{cases}
+\frac{a_{k}-a_{p}}{k-p} &amp; k  \geq p \\
+\frac{a_{p}-a_{k}}{p-k} &amp; k &lt; p
+\end{cases}" title="d =\begin{cases}
+\frac{a_{k}-a_{p}}{k-p} &amp; k  \geq p \\
+\frac{a_{p}-a_{k}}{p-k} &amp; k &lt; p
+\end{cases}" class="math display" /> и</p>
 <h4 id="ввод-ввыод">Ввод ввыод</h4>
 <pre><code></code></pre>
 <h4 id="блок-схема">Блок схема</h4>

@@ -1,4 +1,4 @@
-theme = "gruber-darker"
+theme = "simple-light"
 
 [keys.normal]
 'р' = "move_char_left"
