@@ -1,20 +1,14 @@
-vim.opt.relativenumber = true
-vim.opt.number = true
-vim.opt.numberwidth = 2
+vim.opt.clipboard="unnamedplus"
 
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-        
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+vim.opt.relativenumber=true
+vim.opt.number=true
+vim.opt.numberwidth=3
 
-vim.opt.scrolloff = 5
-vim.opt.cursorline = true
+vim.opt.shiftwidth=4
 
---opt.signcolumn = "yes" 
-vim.opt.mouse = 'a'
-vim.opt.termguicolors = true
-vim.opt.swapfile = false
+vim.opt.ignorecase=true
+vim.opt.smartcase=true
 
-vim.opt.updatetime = 250
+vim.opt.swapfile=false
 
+vim.opt.scrolloff=5
