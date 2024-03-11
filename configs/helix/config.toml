@@ -1,0 +1,31 @@
+theme = "simple-light"
+
+[keys.normal]
+'р' = "move_char_left"
+'д' = "move_char_right"
+'л' = "move_visual_line_up"
+'о' = "move_visual_line_down"
+'ш'     = "insert_mode"
+X     = "extend_line_above"
+
+[keys.insert]
+tab   = "insert_tab" # destroys helix futures add in 23.10v
+
+[keys.select]
+X     = "extend_line_above"
+
+[editor]
+scroll-lines       = 2
+shell              = ["sh", "-c"]
+line-number        = "relative"
+bufferline         = "multiple"
+color-modes        = true
+
+[editor.cursor-shape]
+insert = "bar"
+
+[editor.gutters]
+layout = [ "diagnostics", "line-numbers", "spacer" ]
+
+[editor.soft-wrap]
+enable = true
