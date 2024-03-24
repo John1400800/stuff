@@ -1,12 +1,14 @@
+set nocompatible
+
 if &t_Co>=2
     syntax on
-endif
-if &t_Co>=256
-    set termguicolors
-    colorscheme mycolorscheme
-    if !has("gui_running")
-	let &t_SI="\<Esc>[6 q"
-	let &t_EI="\<Esc>[2 q"
+    if &t_Co>=256
+        set termguicolors
+        colorscheme mycolorscheme
+        if !has("gui_running")
+            let &t_SI="\<Esc>[6 q"
+            let &t_EI="\<Esc>[2 q"
+        endif
     endif
 endif
 
@@ -44,10 +46,9 @@ set wildmenu
 set wildoptions	=fuzzy,pum,tagfile
 
 set scrolloff	=5
+set sidescrolloff=5
 
 let g:netrw_liststyle=3
 let g:netrw_winsize  =22
 
-nnoremap <C-J>  :bnext<CR>
-nnoremap <C-K>  :bprevious<CR>
-nnoremap <F4>	:set  hlsearch!<CR>
+nnoremap <F4>	:nohlsearch<cr>
