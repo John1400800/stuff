@@ -17,7 +17,7 @@ void wrap_str(char *start_linep, int lim) {
         if (curr_posp - start_linep >= lim && islastspaces) {
             while (!isspace(*curr_posp))
                 --curr_posp;
-            *(curr_posp++) = '\n';
+            *curr_posp++ = '\n';
             start_linep = curr_posp;
             islastspaces = 0;
         }
