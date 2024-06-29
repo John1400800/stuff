@@ -2,36 +2,38 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define TEST_NUM -134
+static const char digits[] = "0123456789abcdef";
 
-void itoa(int64_t n, char *resptr);
+
+void itob(int64_t n, char *resptr, size_t base);
 
 int main(void) {
     char buff[10];
-    itoa(TEST_NUM, buff);
+#define TEST_NUM 255
+    itob(TEST_NUM, buff, 16);
     printf( "input number: %d\n"
             "result:       %s\n",
-            TEST_NUM, buff);
+            TEST_NUM, buff );
     return EXIT_SUCCESS;
 }
 
-void utoa(uint64_t n, char *resptr);
+void utob(uint64_t n, char *resptr, size_t base);
 
-void itoa(int64_t n, char *resptr) {
+void itob(int64_t n, char *resptr, size_t base) {
     if (n < 0) {
         n = -n;
         *resptr++ = '-';
     }
-    utoa((uint64_t)n, resptr);
+    utob((uint64_t)n, resptr, base);
 }
 
-void utoa(uint64_t n, char *resptr) {
+void utob(uint64_t n, char *resptr, size_t base) {
     size_t i, rem;
-    for (i=1, rem=10; n/rem > 0; ++i)
-        rem *= 10;
+    for (i=1, rem=base; n/rem > 0; ++i)
+        rem *= base;
     resptr[i] = '\0';
     while (i > 0) {
-        resptr[--i] = (char)(n % 10) + '0';
-        n /= 10;
+        resptr[--i] = digits[n % base];
+        n /= base;
     }
 }
