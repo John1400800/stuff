@@ -1,19 +1,37 @@
+#include <stdint.h>
+#include <stdlib.h>
 #include <stdio.h>
 
-char *uitoa(int n, char *str);
+#define TEST_NUM -134
+
+void itoa(int64_t n, char *resptr);
 
 int main(void) {
-    char buff[100];
-    printf("%s\n", uitoa(145, buff));
+    char buff[10];
+    itoa(TEST_NUM, buff);
+    printf( "input number: %d\n"
+            "result:       %s\n",
+            TEST_NUM, buff);
+    return EXIT_SUCCESS;
 }
 
-char *uitoa(int n, char *str) {
-    char *ptr;
-    int divisor;
-    for (divisor=1; n/divisor>=10; divisor*=10)
-        ;
-    for (ptr = str; divisor>0; ++ptr, n%=divisor, divisor/=10)
-        *ptr = (char)('0'+n/divisor);
-    *ptr = '\0';
-    return str;
+void utoa(uint64_t n, char *resptr);
+
+void itoa(int64_t n, char *resptr) {
+    if (n < 0) {
+        n = -n;
+        *resptr++ = '-';
+    }
+    utoa((uint64_t)n, resptr);
+}
+
+void utoa(uint64_t n, char *resptr) {
+    size_t i, rem;
+    for (i=1, rem=10; n/rem > 0; ++i)
+        rem *= 10;
+    resptr[i] = '\0';
+    while (i > 0) {
+        resptr[--i] = (char)(n % 10) + '0';
+        n /= 10;
+    }
 }
