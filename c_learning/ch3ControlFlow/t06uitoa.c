@@ -4,7 +4,6 @@
 
 static const char digits[] = "0123456789abcdef";
 
-
 void itob(int64_t n, char *resptr, size_t base);
 
 int main(void) {
