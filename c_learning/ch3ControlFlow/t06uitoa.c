@@ -8,8 +8,9 @@ void itob(int64_t n, char *resptr, size_t base);
 
 int main(void) {
     char buff[10];
-#define TEST_NUM 255
-    itob(TEST_NUM, buff, 16);
+#define TEST_NUM 117
+#define BASE 2
+    itob(TEST_NUM, buff, BASE);
     printf( "input number: %d\n"
             "result:       %s\n",
             TEST_NUM, buff );
@@ -28,11 +29,9 @@ void itob(int64_t n, char *resptr, size_t base) {
 
 void utob(uint64_t n, char *resptr, size_t base) {
     size_t i, rem;
-    for (i=1, rem=base; n/rem > 0; ++i)
-        rem *= base;
+    for (rem=1u; n/rem>=base; rem*=base)
+        ;
+    for (i=0; !i || rem; n%=rem, rem/=base, ++i)
+        resptr[i] = digits[n/rem];
     resptr[i] = '\0';
-    while (i > 0) {
-        resptr[--i] = digits[n % base];
-        n /= base;
-    }
 }
