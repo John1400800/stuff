@@ -19,7 +19,7 @@ class App:
         self.entries = {}
         root.title(App.TITLE)
         self.center_window(App.WIDTH, App.HEIGHT)
-        self.root.resizable(False, False)
+        root.resizable(False, False)
         self.setup_ui()
         root.mainloop()
 
