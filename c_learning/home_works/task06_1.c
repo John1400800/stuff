@@ -1,4 +1,5 @@
-#include <stdio.h>
+#include <stdio.h>
+
 #include "get_num.h"
 
 #define MAXLINE 100
