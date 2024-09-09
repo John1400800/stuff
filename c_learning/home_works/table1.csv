@@ -1,0 +1,13 @@
+car model;registration number;owner's last name;owner's initials;quarterly mileage (array of four elements)
+Toyota;BNXR45;Peterson;PI;2345 3456 4567 5678
+Honda;JKZQ78;Johnson;JA;1234 2345 3456 4567
+Ford;XMWP23;Sidorov;SP;3456 4567 5678 6789
+Chevrolet;LNQY61;Kuznetsov;KA;2345 3456 4567 5678
+BMW;PZRJ92;Smirnov;SD;1234 2345 3456 4567
+Audi;FWKX34;Popov;PS;3456 4567 5678 6789
+Mercede-Benz;DQTM78;Sokolov;SA;2345 3456 4567 5678
+Toyota;BNXR45;Peterson;PI;2345 3456 4567 5678
+Honda;JKZQ78;Johnson;JA;1234 2345 3456 4567
+BMW;FWKX34;Sokolov;SA;1234 2345 3456 4567
+Toyota;PZRJ92;Kuznetsov;KA;2345 0 0 4567
+Chevrolet;PZRJ92;Johnson;JA;3456 4567 5678 6789
