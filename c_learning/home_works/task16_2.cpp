@@ -106,8 +106,8 @@ int main() {
                         addPublication(pubs, {type, name, price});
                     } catch (const std::exception& e) {
                         std::cerr << "Ошибка добавления публикации: " << e.what() << '\n';
-                        std::cin.clear(); // Очистка флага ошибки
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Пропуск некорректного ввода
+                        std::cin.clear();
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     }
                     break;
 
@@ -146,8 +146,8 @@ int main() {
 
         } catch (const std::exception& e) {
             std::cerr << "Ошибка: " << e.what() << '\n';
-            std::cin.clear(); // Очистка флага ошибки
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Пропуск некорректного ввода
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
 
     } while (choice != 5);
