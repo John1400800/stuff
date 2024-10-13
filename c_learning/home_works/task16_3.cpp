@@ -38,13 +38,28 @@ Term parseStrToTerm(std::string term) {
     return res;
 }
 
-void parseStrToPolynomial(const std::string& str, std::list<Term>& /*res*/) {
+void parseStrToPolynomial(const std::string& str, std::list<Term>& res) {
     size_t start{ 0 };
     size_t pos  { start };
     while (pos != std::string::npos) {
         pos = str.find_first_of("+-", start + 1);
-        std::string term = str.substr(start, pos - start);
-        std::cout << term << '\n';
+        Term term = parseStrToTerm(str.substr(start, pos - start));
+        auto it{ res.begin() }; // separate this VVV
+        bool insrtd{ false };
+        while (!insrtd && it != res.end()) {
+            if (term.degree == it->degree) {
+                it->cfcnt += term.cfcnt;
+                if (it->cfcnt == 0)
+                    it = res.erase(it);
+                insrtd = true;
+            } else if (it->degree < term.degree) {
+                res.insert(it, term);
+                insrtd = true;
+            }
+            ++it;
+        }
+        if (!insrtd)
+            res.push_back(term);
         start = pos;
     }
 }
@@ -53,19 +68,22 @@ std::ostream& operator<<(std::ostream& out, Term term) {
 #ifdef DEBUG
     return out << "{ " << term.cfcnt << ", " << term.degree << " }";
 #else
-    if (term.cfcnt != 0)
+    if (term.cfcnt < 0) {
+        out << '-';
+        term.cfcnt = -term.cfcnt;
+    } else
+        out << '+';
+    if (term.cfcnt != 0) {
         if (term.degree == 0)
             out << term.cfcnt;
         else {
-            if (abs(term.cfcnt) != 1)
+            if (term.cfcnt != 1)
                 out << term.cfcnt;
-            else
-                out << (term.cfcnt < 0 ?  '-' : '+');
             out << 'x';
             if (term.degree != 1)
                 out << '^' << term.degree;
         }
-    else
+    } else
         out << 0;
     return out;
 #endif
@@ -73,7 +91,9 @@ std::ostream& operator<<(std::ostream& out, Term term) {
 
 int main() {
     std::list<Term> polynomial{};
-    std::cout << parseStrToTerm("+1x") << '\n';
     parseStrToPolynomial("2x^3-1+3x^4-0+x^4", polynomial);
+    for (const Term& term : polynomial)
+        std::cout << term << '\n';
+    std::cout << '\n';
     return EXIT_SUCCESS;
 }
