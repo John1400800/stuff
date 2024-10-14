@@ -1,156 +1,139 @@
-#include <cstdlib>
-#include <cstdint>
-#include <limits>
-#include <list>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <stdexcept>
+#include <cstdlib>      // for EXIT_SUCCESS, abs
+#include <cstdint>      // for int32_t
+#include <list>         // std::list
+#include <string>       // std::string
+#include <string_view>  // std::string_view
+#include <utility>      // for std::pair
+#include <iostream>     // std::cout, std::cin
 
-enum class PublicationType { Newspaper, Magazine };
+// #define DEBUG_PRINT
 
-using Publication = std::tuple<PublicationType, std::string, double>;
+using Term = std::pair<int32_t, int32_t>;
 
-std::istream& operator>>(std::istream& is, PublicationType& type) {
-    std::string str; 
-    is >> str;
-    if (str == "Газета") 
-        type = PublicationType::Newspaper;
-    else if (str == "Журнал") 
-        type = PublicationType::Magazine;
-    else 
-        throw std::invalid_argument("Неверный тип публикации: " + str);
-    return is;
+Term parseStrToTerm(std::string_view term) {
+    int32_t cfcnt { 1 },
+            degree{ 1 };
+    size_t xPos{ term.find('x') };
+    if (xPos == std::string_view::npos) { // if x not exist
+        cfcnt = std::stoi(std::string(term));
+        degree = 0;
+    } else { 
+        if (xPos > 0)
+            switch (term[xPos-1]) {
+            case '-':
+                cfcnt = -1;
+                break;
+            case '+':
+                cfcnt = +1;
+                break;
+            default:
+                cfcnt = std::stoi(std::string(term.substr(0, xPos)));
+            }
+        size_t powPos{ term.find('^', xPos) };
+        if (powPos == std::string_view::npos)
+            degree = 1;
+        else
+            degree = std::stoi(std::string(term.substr(powPos + 1)));
+    }
+    return { cfcnt, degree };
 }
 
-std::ostream& operator<<(std::ostream& out, PublicationType type) {
-    return out << (type == PublicationType::Newspaper ? "Газета" : "Журнал");
+void insertTerm(std::list<Term>& poly, const Term& term) {
+    for (auto it{ poly.begin() }; it != poly.end(); ++it) {
+        if (it->second == term.second) {
+            it->first += term.first;
+            if (it->first == 0)
+                poly.erase(it);
+            return;
+        } else if (it->second < term.second) {
+            poly.insert(it, term);
+            return;
+        }
+    }
+    poly.push_back(term); // if term has the lowest degree put to the end
 }
 
-std::ostream& operator<<(std::ostream& out, const std::list<Publication>& pubs) {
-    for (const auto& pub : pubs)
-        out << std::get<0>(pub) << ": " << std::get<1>(pub) << ", Цена: " << std::get<2>(pub) << " монеты.\n";
-    if (pubs.empty()) 
-        out << "Список пуст.\n";
+void removeTermByDegree(std::list<Term>& poly, int32_t degree) {
+    for (auto it{ poly.begin() }; it != poly.end(); ++it)
+        if (it->second == degree) {
+            poly.erase(it);
+            return;
+        }
+}
+
+void parseStrToPolynomial(std::string_view str, std::list<Term>& poly) {
+    size_t start {0},
+           len   { str.size() };
+    while (start < len) {
+        size_t next{ str.find_first_of("+-", start + 1) };
+        if (next == std::string_view::npos)
+            next = len;
+        insertTerm(poly, parseStrToTerm(str.substr(start, next - start)));
+        start = next;
+    }
+}
+
+std::ostream& operator<<(std::ostream& out, const Term& term) {
+#ifndef DEBUG_PRINT
+    if (term.first == 0)
+        return out << 0;
+    out << (term.first < 0? '-' : '+');
+    if (std::abs(term.first) != 1 || term.second == 0)
+        out << std::abs(term.first);
+    if (term.second > 0) {
+        out << 'x';
+        if (term.second != 1)
+            out << '^' << term.second;
+    }
+#else
+    out << "{ " << term.first << ", " << term.second << " }";
+#endif
     return out;
 }
 
-void addPublication(std::list<Publication>& pubs, const Publication& pub) {
-    if (std::get<0>(pub) == PublicationType::Magazine)
-        pubs.push_front(pub);
-    else
-        pubs.push_back(pub);
-}
-
-void loadPublications(std::list<Publication>& pubs, const std::string& filename) {
-    try {
-        std::ifstream file{filename};
-        if (!file.is_open()) 
-            throw std::runtime_error("Ошибка открытия файла: " + filename);
-
-        std::string line, pubType, name; 
-        double price;
-        while (std::getline(file >> std::ws, line)) {
-            std::istringstream iss{line}; 
-            std::getline(iss >> std::ws, pubType, ',');
-            std::getline(iss >> std::ws, name, ','); 
-            iss >> price;
-            addPublication(pubs, {pubType == "Журнал" ? PublicationType::Magazine : PublicationType::Newspaper,
-                                  name, price});
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Произошла ошибка при загрузке: " << e.what() << '\n';
-    }
-}
-
-void savePublications(const std::list<Publication>& pubs, const std::string& filename) {
-    try {
-        std::ofstream file{filename};
-        if (!file) 
-            throw std::runtime_error("Ошибка записи в файл: " + filename);
-        for (const auto& pub : pubs)
-            file << (std::get<0>(pub) == PublicationType::Newspaper ? "Газета" : "Журнал")
-                 << ", " << std::get<1>(pub) << ", " << std::get<2>(pub) << '\n';
-    } catch (const std::exception& e) {
-        std::cerr << "Произошла ошибка при сохранении: " << e.what() << '\n';
-    }
-}
-
 int main() {
-    std::setlocale(LC_ALL, "ru_RU.UTF-8");
-    std::list<Publication> pubs; 
-    uint32_t choice; 
-    PublicationType type; 
-    std::string name; 
-    double price;
+    std::list<Term> polynomial;
+    std::string input;
+    uint32_t chose;
+
 
     do {
-        try {
-            std::cout << "Меню:\n1. Добавить\n2. Показать\n3. Загрузить из файла\n4. Сохранить в файл\n5. Выход\nВыберите: ";
-            if (!(std::cin >> choice)) {
-                throw std::invalid_argument("Некорректный ввод! Вы должны ввести число.");
-            }
-
-            switch (choice) {
-                case 1:
-                    try {
-                        std::cout << "Введите тип (Газета или Журнал): "; 
-                        std::cin >> type;
-                        std::cout << "Введите название: "; 
-                        std::getline(std::cin >> std::ws, name);
-                        std::cout << "Введите цену: "; 
-                        if (!(std::cin >> price)) {
-                            throw std::invalid_argument("Некорректный ввод цены! Должно быть число.");
-                        }
-                        addPublication(pubs, {type, name, price});
-                    } catch (const std::exception& e) {
-                        std::cerr << "Ошибка добавления публикации: " << e.what() << '\n';
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    }
-                    break;
-
-                case 2:
-                    std::cout << pubs;
-                    break;
-
-                case 3:
-                    try {
-                        std::cout << "Введите имя файла: "; 
-                        std::getline(std::cin >> std::ws, name);
-                        loadPublications(pubs, name);
-                    } catch (const std::exception& e) {
-                        std::cerr << "Ошибка при загрузке: " << e.what() << '\n';
-                    }
-                    break;
-
-                case 4:
-                    try {
-                        std::cout << "Введите имя файла: "; 
-                        std::getline(std::cin >> std::ws, name);
-                        savePublications(pubs, name);
-                    } catch (const std::exception& e) {
-                        std::cerr << "Ошибка при сохранении: " << e.what() << '\n';
-                    }
-                    break;
-
-                case 5:
-                    std::cout << "Выход из программы.\n";
-                    break;
-
-                default:
-                    std::cerr << "Неверный выбор.\n";
-                    break;
-            }
-
-        } catch (const std::exception& e) {
-            std::cerr << "Ошибка: " << e.what() << '\n';
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "\nМеню:\n"
+            "1. Ввести новый член полинома\n"
+            "2. Удалить член по указанной степени\n"
+            "3. Вывести полином\n"
+            "0. Выйти\n"
+            "Выбирите: ";
+        std::cin >> chose;
+        switch(chose) {
+            case 1:
+                std::cout << "Введите многочлен или одночлен: ";
+                std::getline(std::cin >> std::ws, input);
+                parseStrToPolynomial(input, polynomial);
+                break;
+            case 2:
+                std::cout << "Введите стеаень члена который хотите удалить: ";
+                int32_t degree;
+                std::cin >> degree;
+                removeTermByDegree(polynomial, degree);
+                break;
+            case 3:
+                if (polynomial.empty())
+                    std::cout << "Полином пуст\n";
+                else {
+                    std::cout << "Полином:\n";
+                    for (const auto& term : polynomial)
+                        std::cout << term << " ";
+                    std::cout << '\n';
+                }
+                break;
+            case 0:
+                std::cout << "Выход\n";
+                break;
+            default:
+                std::cout << "Неизвестный ввод, Выберете из доступных: 1, 2, 3, 0\n";
+                break;
         }
-
-    } while (choice != 5);
-
+    } while(chose);
     return EXIT_SUCCESS;
 }
