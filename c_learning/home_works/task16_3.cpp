@@ -74,7 +74,17 @@ std::ostream& operator<<(std::ostream& out, const Term& term) {
 
 int main() {
     std::list<Term> polynomial;
-    parseStrToPolynomial("2x^3-1+3x^4-0+x^4", polynomial);
+    std::string input;
+    while (true) {
+        std::cout << "Введите полином (или '0' для выхода): ";
+        std::getline(std::cin >> std::ws, input);
+        if (input == "0")
+            break;
+        parseStrToPolynomial(input, polynomial);
+    }
+        
+
+    std::cout << "Полином:\n";
     for (const auto& term : polynomial)
         std::cout << term << " ";
     std::cout << '\n';
