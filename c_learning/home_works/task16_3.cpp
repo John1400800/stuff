@@ -53,6 +53,14 @@ void insertTerm(std::list<Term>& poly, const Term& term) {
     poly.push_back(term); // if term has the lowest degree put to the end
 }
 
+void removeTermByDegree(std::list<Term>& poly, int32_t degree) {
+    for (auto it{ poly.begin() }; it != poly.end(); ++it)
+        if (it->second == degree) {
+            poly.erase(it);
+            return;
+        }
+}
+
 void parseStrToPolynomial(std::string_view str, std::list<Term>& poly) {
     size_t start {0},
            len   { str.size() };
@@ -86,16 +94,46 @@ std::ostream& operator<<(std::ostream& out, const Term& term) {
 int main() {
     std::list<Term> polynomial;
     std::string input;
-    while (true) {
-        std::cout << "Введите полином (или '0' для выхода): ";
-        std::getline(std::cin >> std::ws, input);
-        if (input == "0")
-            break;
-        parseStrToPolynomial(input, polynomial);
-    }
-    std::cout << "Полином:\n";
-    for (const auto& term : polynomial)
-        std::cout << term << " ";
-    std::cout << '\n';
+    uint32_t chose;
+
+
+    do {
+        std::cout << "\nМеню:\n"
+            "1. Ввести новый член полинома\n"
+            "2. Удалить член по указанной степени\n"
+            "3. Вывести полином\n"
+            "0. Выйти\n"
+            "Выбирите: ";
+        std::cin >> chose;
+        switch(chose) {
+            case 1:
+                std::cout << "Введите многочлен или одночлен: ";
+                std::getline(std::cin >> std::ws, input);
+                parseStrToPolynomial(input, polynomial);
+                break;
+            case 2:
+                std::cout << "Введите стеаень члена который хотите удалить: ";
+                int32_t degree;
+                std::cin >> degree;
+                removeTermByDegree(polynomial, degree);
+                break;
+            case 3:
+                if (polynomial.empty())
+                    std::cout << "Полином пуст\n";
+                else {
+                    std::cout << "Полином:\n";
+                    for (const auto& term : polynomial)
+                        std::cout << term << " ";
+                    std::cout << '\n';
+                }
+                break;
+            case 0:
+                std::cout << "Выход\n";
+                break;
+            default:
+                std::cout << "Неизвестный ввод, Выберете из доступных: 1, 2, 3, 0\n";
+                break;
+        }
+    } while(chose);
     return EXIT_SUCCESS;
 }
