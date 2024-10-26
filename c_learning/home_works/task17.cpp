@@ -1,15 +1,16 @@
 #include <cstdlib>
 #include <cstdint>
 #include <initializer_list>
+#include <string>
 #include <iostream>
 
 struct Node {
-    int32_t data_;
+    int32_t data;
     Node   *left;
     Node   *right;
 
-    Node(int32_t data)
-        : data_{ data }, left{ nullptr }, right{ nullptr }
+    Node(int32_t data, Node *left=nullptr, Node *right=nullptr)
+        : data{ data }, left{ left }, right{ right }
     { }
 };
 
@@ -21,7 +22,7 @@ class BinaryTree {
             node = new Node{ data };
             return;
         }
-        if (data < node->data_)
+        if (data < node->data)
             insert(node->left,  data);
         else
             insert(node->right, data);
@@ -31,7 +32,7 @@ class BinaryTree {
         if (!node)
             return;
         display(out, node->left);
-        out << node->data_ << ' ';
+        out << node->data << ' ';
         display(out, node->right);
     }
 
@@ -39,7 +40,7 @@ class BinaryTree {
         if (!node)
             return ;
         recReplaceWithOposite(node->left);
-        node->data_ = -node->data_;
+        node->data = -node->data;
         recReplaceWithOposite(node->right);
     }
 public:
@@ -60,7 +61,7 @@ public:
 
     void replaceNegativesWithAbs() {
         Node *firstNegative{ root };
-        while (firstNegative && firstNegative->data_ >= 0)
+        while (firstNegative && firstNegative->data >= 0)
             firstNegative = firstNegative->left;
         if (!firstNegative)
             return ;
@@ -74,7 +75,22 @@ public:
 };
 
 int main() {
-    BinaryTree btree{ 5, 1, 3, 0, 2, 6, 4, -4, -2, -3, -1 };
+    BinaryTree btree{};
+    std::string input{};
+    std::cout << "Enter the numbers to add to the tree (leave the line blank to complete):\n";
+    while (true) {
+        std::getline(std::cin, input);
+        if (input.empty())
+            break;   
+        try {
+            int32_t value = std::stoi(input);
+            btree.insert(value);             
+        } catch (const std::invalid_argument& e) {
+            std::cout << "Please enter a valid integer.\n";
+        } catch (const std::out_of_range& e) {
+            std::cout << "The number is out of range.\n";
+        }
+    }
     std::cout << btree << '\n';
     btree.replaceNegativesWithAbs();
     std::cout << btree << '\n';
