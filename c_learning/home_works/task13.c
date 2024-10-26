@@ -8,10 +8,13 @@
 #define isspace(c) ((c) == ' ' || (unsigned)(c)-'\t' < 5)
 #endif // _CTYPE_H
 
+#define BUFFSIZE 1024
+
 char *rev_words_in_sentence(const char *src);
 
 int main(void) {
-    printf("%s\n", rev_words_in_sentence("hello world"));
+    char inpbuff[BUFFSIZE];
+    printf("%s\n", rev_words_in_sentence(fgets(inpbuff, BUFFSIZE, stdin)));
     return EXIT_SUCCESS;
 }
 
@@ -43,4 +46,3 @@ char *rev_words_in_sentence(const char *src) {
     }
     return res;
 }
-
