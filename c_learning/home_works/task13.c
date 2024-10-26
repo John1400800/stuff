@@ -14,6 +14,7 @@ char *rev_words_in_sentence(const char *src);
 
 int main(void) {
     char inpbuff[BUFFSIZE];
+    printf("Введите слова из латинских букв:\n");
     printf("%s\n", rev_words_in_sentence(fgets(inpbuff, BUFFSIZE, stdin)));
     return EXIT_SUCCESS;
 }
