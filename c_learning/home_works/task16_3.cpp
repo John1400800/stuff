@@ -6,7 +6,9 @@
 #include <utility>      // for std::pair
 #include <iostream>     // std::cout, std::cin
 
-// #define DEBUG_PRINT
+namespace {
+    constexpr auto DEBUG_PRINT{ false };
+}
 
 using Term = std::pair<int32_t, int32_t>;
 
@@ -74,7 +76,7 @@ void parseStrToPolynomial(std::string_view str, std::list<Term>& poly) {
 }
 
 std::ostream& operator<<(std::ostream& out, const Term& term) {
-#ifndef DEBUG_PRINT
+if constexpr (! DEBUG_PRINT) {
     if (term.first == 0)
         return out << 0;
     out << (term.first < 0? '-' : '+');
@@ -85,9 +87,10 @@ std::ostream& operator<<(std::ostream& out, const Term& term) {
         if (term.second != 1)
             out << '^' << term.second;
     }
-#else
+}
+else {
     out << "{ " << term.first << ", " << term.second << " }";
-#endif
+}
     return out;
 }
 
@@ -95,8 +98,6 @@ int main() {
     std::list<Term> polynomial;
     std::string input;
     uint32_t chose;
-
-
     do {
         std::cout << "\nМеню:\n"
             "1. Ввести новый член полинома\n"
