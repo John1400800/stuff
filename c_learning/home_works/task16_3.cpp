@@ -32,7 +32,7 @@ Term parseStrToTerm(std::string_view term) {
                 cfcnt = std::stoi(std::string(term.substr(0, xPos)));
             }
         size_t powPos{ term.find('^', xPos) };
-        if (powPos == std::string_view::npos)
+        if (powPos == std::string_view::npos || cfcnt == 0)
             degree = 1;
         else
             degree = std::stoi(std::string(term.substr(powPos + 1)));
@@ -42,12 +42,12 @@ Term parseStrToTerm(std::string_view term) {
 
 void insertTerm(std::list<Term>& poly, const Term& term) {
     for (auto it{ poly.begin() }; it != poly.end(); ++it) {
-        if (it->second == term.second) {
+        if (term.second == it->second) {
             it->first += term.first;
             if (it->first == 0)
                 poly.erase(it);
             return;
-        } else if (it->second < term.second) {
+        } else if (term.second > it->second) {
             poly.insert(it, term);
             return;
         }
@@ -77,9 +77,9 @@ void parseStrToPolynomial(std::string_view str, std::list<Term>& poly) {
 
 std::ostream& operator<<(std::ostream& out, const Term& term) {
 if constexpr (! DEBUG_PRINT) {
+    out << (term.first < 0? '-' : '+');
     if (term.first == 0)
         return out << 0;
-    out << (term.first < 0? '-' : '+');
     if (std::abs(term.first) != 1 || term.second == 0)
         out << std::abs(term.first);
     if (term.second > 0) {
