@@ -42,7 +42,8 @@ class BinaryTree {
         if (!node)
             return ;
         recReplaceWithOposite(node->left);
-        node->data = -node->data;
+        if (node->data < 0)
+            node->data *= -1;
         recReplaceWithOposite(node->right);
     }
 public:
