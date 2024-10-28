@@ -4,20 +4,22 @@
 #include <string>
 #include <iostream>
 
+template <typename T>
 struct Node {
-    int32_t data;
-    Node   *left;
-    Node   *right;
+    T data;
+    Node<T>   *left;
+    Node<T>   *right;
 
-    Node(int32_t data, Node *left=nullptr, Node *right=nullptr)
+    Node(T data, Node<T> *left=nullptr, Node<T> *right=nullptr)
         : data{ data }, left{ left }, right{ right }
     { }
 };
 
+template <typename T>
 class BinaryTree {
-    Node *root;
+    Node<T> *root;
 
-    static void insert(Node *&node, int32_t data) {
+    static void insert(Node<T> *&node, T data) {
         if (!node) {
             node = new Node{ data };
             return;
@@ -28,7 +30,7 @@ class BinaryTree {
             insert(node->right, data);
     }
 
-    static void display(std::ostream& out, const Node *node) {
+    static void display(std::ostream& out, const Node<T> *node) {
         if (!node)
             return;
         display(out, node->left);
@@ -36,7 +38,7 @@ class BinaryTree {
         display(out, node->right);
     }
 
-    static void recReplaceWithOposite(Node *node) {
+    static void recReplaceWithOposite(Node<T> *node) {
         if (!node)
             return ;
         recReplaceWithOposite(node->left);
@@ -48,10 +50,10 @@ public:
         : root{ nullptr }
     { }
 
-    BinaryTree(std::initializer_list<int32_t> values)
+    BinaryTree(std::initializer_list<T> values)
         : root{ nullptr }
     {
-        for (int32_t value : values)
+        for (T value : values)
             insert(value);
     }
 
@@ -60,7 +62,7 @@ public:
     }
 
     void replaceNegativesWithAbs() {
-        Node *firstNegative{ root };
+        Node<T> *firstNegative{ root };
         while (firstNegative && firstNegative->data >= 0)
             firstNegative = firstNegative->left;
         if (!firstNegative)
@@ -75,7 +77,7 @@ public:
 };
 
 int main() {
-    BinaryTree btree{};
+    BinaryTree<int32_t> btree{};
     std::string input{};
     std::cout << "Enter the numbers to add to the tree (leave the line blank to complete):\n";
     while (true) {
