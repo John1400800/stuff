@@ -127,14 +127,15 @@ void fillOneToNine(std::vector<T>& vec) {
 int main() {
     Vec100PtrtoFloat vec1{};
     fillOneToNine(vec1);
-    std::cout << vec1 << '\n';
+    std::cout << "float*[100] version:\n"
+        "before deleting a copy:\n" << vec1 << '\n';
     del(vec1);
-    std::cout << vec1 << '\n';
-
+    std::cout << "after deleting a copy:\n" << vec1 << '\n';
     std::vector<float*> vec2(100);
     fillOneToNine(vec2);
-    std::cout << vec2 << '\n';
+    std::cout << "std::vector<float*>(100):\n"
+        "before deleting a copy:\n" << vec2 << '\n';
     del(vec2);
-    std::cout << vec2 << '\n';
+    std::cout << "after deleting a copy:\n" << vec2 << '\n';
     return EXIT_SUCCESS;
 }
