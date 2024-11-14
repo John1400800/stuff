@@ -39,9 +39,11 @@ class App:
         self.draw_circle(canvas, 250, 250, 40, 'black')  # Туловище
         self.draw_circle(canvas, 250, 185, 25, 'black')  # Голова
         canvas.create_line(250, 220, 150, 150, width=6)  # Верхняя левая нога
+        canvas.create_line(250, 230, 140, 180, width=6)  # Средняя 1 левая нога
         canvas.create_line(250, 230, 140, 220, width=6)  # Средняя левая нога
         canvas.create_line(250, 240, 150, 290, width=6)  # Нижняя левая нога
         canvas.create_line(250, 220, 350, 150, width=6)  # Верхняя правая нога
+        canvas.create_line(250, 230, 360, 180, width=6)  # Средняя 1 правая нога
         canvas.create_line(250, 230, 360, 220, width=6)  # Средняя правая нога
         canvas.create_line(250, 240, 350, 290, width=6)  # Нижняя правая нога
 
