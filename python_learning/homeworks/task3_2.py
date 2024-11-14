@@ -39,9 +39,11 @@ class SpiderApp:
         self.draw_circle(0, 65, 25, 'black')    # Голова
         self.draw_line(0, 40, -100, 100)        # Верхняя левая нога
         self.draw_line(0, 30, -110, 30)         # Средняя левая нога
+        self.draw_line(0, 30, -110, 0)         # Средняя левая нога
         self.draw_line(0, 20, -100, -50)        # Нижняя левая нога
         self.draw_line(0, 40, 100, 100)         # Верхняя правая нога
         self.draw_line(0, 30, 110, 30)          # Средняя правая нога
+        self.draw_line(0, 30, 110, 0)          # Средняя правая нога
         self.draw_line(0, 20, 100, -50)         # Нижняя правая нога
 
 if __name__ == "__main__":
