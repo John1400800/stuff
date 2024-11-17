@@ -2,8 +2,8 @@
 #include <cstdint>
 #include <set>
 #include <sstream>
+#include <algorithm>
 #include <iostream>
-#include <algorithm> // Для std::set_difference
 
 std::istream& operator>>(std::istream& in, std::set<uint32_t>& set) {
     std::string inputStr;
@@ -48,6 +48,9 @@ int main() {
     std::cout << "Enter set B: ";
     std::cin >> setB;
 
-    std::cout << "(A \\ B) & (A & B)==null: " << std::boolalpha << (((setA - setB) & (setA & setB)) == std::set<uint32_t>{}) << '\n';
+    std::cout << "A - B: " << (setA - setB) << '\n'
+        << "A & B: " << (setA & setB) << '\n'
+        << "(A \\ B) & (A & B)=={}: "
+        << std::boolalpha << (((setA - setB) & (setA & setB)) == std::set<uint32_t>{}) << '\n';
     return EXIT_SUCCESS;
 }
