@@ -66,7 +66,7 @@ protected:
     using CArrBase<T>::data;
 public:
     // почему в унаследованном от шаблонного класса нужно писать this->member а не member
-    // что означает using в этом контексте ?
+    // что означает using в этом контексте ? (оно как раз позволяет не писать this->member но чтоже оно значит))
     using CArrBase<T>::CArrBase;
 
     CArrWrapper(std::initializer_list<T> iniList)
