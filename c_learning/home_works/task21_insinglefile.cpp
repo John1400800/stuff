@@ -2,58 +2,29 @@
 #include <cstdint>
 #include <cassert>
 #include <initializer_list>
-// #include <utility> // for std::move
 #include <iostream>
 
 template <typename T>
-class CArrWrapper {
+class CArrBase {
 protected:
     size_t size_{ 0 };
-    T *data{ nullptr };
+    T* data { nullptr };
+
+    CArrBase(size_t size, T* data)
+        : size_{ size }, data{ data }
+    { }
 public:
-    CArrWrapper()
-        : CArrWrapper(0)
+    CArrBase() = default;
+
+    CArrBase(size_t size)
+        : CArrBase( size, size > 0? new T[size] : nullptr)
     { }
 
-    CArrWrapper(size_t iniSize)
-        : size_{ iniSize }, data{ size_>0? new T[size_] : nullptr }
-    { }
-
-    CArrWrapper(std::initializer_list<T> iniList)
-        : CArrWrapper( iniList.size() )
-    {
-        size_t i{0};
-        for (const auto& item : iniList)
-            data[i++] = item;
-    }
-
-    CArrWrapper(const CArrWrapper& other)
-        : CArrWrapper( other.size_ )
-    {
-        for (size_t i{0}; i<size_; ++i)
-            data[i] = other.data[i];
-    }
-
-    CArrWrapper(CArrWrapper&& other) noexcept
-        : size_{ other.size_ }, data{ other.data }
-    {
-        std::cout << "\nMove\n";
-        other.size_ = 0;
-        other.data = nullptr;
-    }
-
-    CArrWrapper& operator=(const CArrWrapper& other) {
-        if (this == &other)
-            return *this;
+    ~CArrBase() {
         delete[] data;
-        size_ = other.size_;
-        data = size_>0? new T[size_] : nullptr;
-        for (size_t i{0}; i < size_; ++i)
-            data[i] = other.data[i];
-        return *this;
     }
 
-    CArrWrapper& operator=(CArrWrapper&& other) noexcept {
+    CArrBase& operator=(CArrBase&& other) noexcept {
         if (this == &other)
             return *this;
         delete[] data;
@@ -64,9 +35,9 @@ public:
         return *this;
     }
 
-    ~CArrWrapper() {
-        // std::cout << "Clear\n";
-        delete[] data;
+    const T& operator[](size_t idx) const {
+        assert(idx < size_);
+        return data[idx];
     }
 
     T& operator[](size_t idx) {
@@ -74,35 +45,76 @@ public:
         return data[idx];
     }
 
-    const T& operator[](size_t idx) const {
-        assert(idx < size_);
-        return data[idx];
-    }
-
-    size_t size() const {
+    size_t size() const { // maybe unused
         return size_;
     }
 
-    const T* begin() const {
+    const T *begin() const {
         return data;
     }
 
-    const T* end() const {
-        return data + size_;
+    const T *end() const {
+        return data+size_;
+    }
+};
+
+template <typename T>
+class CArrWrapper : public CArrBase<T> {
+protected:
+    // почему в унаследованном от шаблонного класса нужно писать this->member а не member
+    using CArrBase<T>::size_;
+    using CArrBase<T>::data;
+public:
+    // почему в унаследованном от шаблонного класса нужно писать this->member а не member
+    // что означает using в этом контексте ?
+    using CArrBase<T>::CArrBase;
+
+    CArrWrapper(std::initializer_list<T> iniList)
+        : CArrBase<T>( iniList.size() )
+    {
+        size_t i{0};
+        for (const auto& item : iniList)
+            (*this)[i++] = item;
     }
 
-    // split into inherited class in future and replace with operator+=
+    CArrWrapper(const CArrWrapper& other)
+        : CArrBase<T>( other.size_ )
+    {
+        for (size_t i{0}; i<size_; ++i)
+            (*this)[i] = other[i];
+    }
+
+    CArrWrapper(CArrWrapper&& other) noexcept
+        : CArrBase<T>( other.size_,  other.data )
+    {
+        other.size_ = 0;
+        other.data = nullptr;
+    }
+
+    CArrWrapper& operator=(const CArrWrapper& other) {
+        //// explain why it won't work
+        // CArrWrapper newArr{other};
+        // return *this = std::move(newArr);
+        delete[] data;
+        size_ = other.size_;
+        data = new T[size_];
+        size_t i{0};
+        for (const T& el : other)
+            (*this)[i++] = el;
+        return *this;
+    }
+
     CArrWrapper& push_back(const T& el) {
         CArrWrapper res(size_ + 1);
         size_t i{0};
         for (; i<size_; ++i)
-            res[i] = data[i];
+            res[i] = (*this)[i];
         res[size_] = el;
         return *this = std::move(res);
     }
 };
 
-class CStrWrapper : public CArrWrapper<char> {
+class CStrWrapper : public CArrBase<char> {
 protected:
     static constexpr size_t CStrLen(const char* str) {
         if (str==nullptr)
@@ -113,15 +125,34 @@ protected:
         return i;
     }
 public:
+    using CArrBase<char>::CArrBase;
+
     CStrWrapper(size_t iniSize)
-        : CArrWrapper(iniSize+1)
+        : CArrBase(iniSize+1)
     {
         data[--size_] = '\0';
     }
 
-    CStrWrapper()
-        : CStrWrapper(0ul)
-    { }
+    CStrWrapper(const CStrWrapper& other) // maybe unused
+        : CStrWrapper(other.size_)
+    {
+        for (size_t i{0}; i<size_; ++i)
+            (*this)[i] = other[i];
+    }
+
+    CStrWrapper& operator=(const CStrWrapper& other) { // maybe unused
+        //// explain why it won't work
+        // CStrWrapper newStr{ other };
+        // return *this = std::move(newStr);
+        delete[] data;
+        size_ = other.size_;
+        data = new char[size_+1];
+        data[size_] = '\0';
+        size_t i{0};
+        for (char ch : other)
+            (*this)[i++] = ch;
+        return *this;
+    }
 
     CStrWrapper(const char* str)
         : CStrWrapper(CStrLen(str))
@@ -129,16 +160,16 @@ public:
         if (str == nullptr)
             return ;
         for (size_t i{0}; i<size_; ++i)
-            data[i] = str[i];
+            (*this)[i] = str[i];
     }
 
     CStrWrapper& operator+=(const CStrWrapper& other) {
-        CStrWrapper newStr(size_ + other.size_);
+        CStrWrapper newStr{size_ + other.size_};
         size_t i{0};
-        for (; i<size_; ++i)
-            newStr.data[i] = data[i];
-        for (size_t j{0}; j<other.size_; ++j, ++i)
-            newStr.data[i] = other.data[j];
+        for (; i<size_; ++i) // copy *this
+            newStr[i] = (*this)[i];
+        for (size_t j{0}; j<other.size_; ++j, ++i) // copy other
+            newStr[i] = other[j];
         return *this = std::move(newStr);
     }
 };
@@ -154,8 +185,8 @@ std::ostream& operator<<(std::ostream& out, const CArrWrapper<T>& arr) {
 }
 
 std::ostream& operator<<(std::ostream& out, const CStrWrapper& str) {
-    for (const auto& ch : str)
-        out << ch;
+    for (char ch : str)
+        std::cout << ch;
     return out;
 }
 
