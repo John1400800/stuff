@@ -5,8 +5,8 @@
 
 #define BUFFSIZE 2048
 typedef enum exitStatus {
-    SUCCESS = 0,
-    FAILURE = 1
+    FAILURE = 0,
+    SUCCESS = 1
 } exitStatus;
 
 bool readText(char *text, const char* fileName) {
@@ -38,7 +38,7 @@ size_t countOccurrences(char *text, char searchChar) {
 
 int main(void) {
     char text[BUFFSIZE];
-    if (readText(text, FILENAME) == SUCCESS) {
+    if (readText(text, FILENAME)) {
         printf("Source text from file %s:\n%s\n", FILENAME, text);
         printf("The character '%c' appears %zu times.\n",
                SEARCH_LETTER, countOccurrences(text, SEARCH_LETTER));
