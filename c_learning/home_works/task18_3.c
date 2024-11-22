@@ -1,70 +1,49 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
 
-#define LINE_LEN 20
-#define MAX_LINES 100
+#define BUFFSIZE 2048
+typedef enum exitStatus {
+    SUCCESS = 0,
+    FAILURE = 1
+} exitStatus;
 
-typedef char Line[LINE_LEN];
-Line Text[MAX_LINES];
-
-int countOccurrences(Line text[], char symbol) {
-    int count = 0;
-    for (int i = 0; i < MAX_LINES; ++i) {
-        for (int j = 0; j < LINE_LEN; ++j) {
-            if (text[i][j] == symbol) {
-                count++;
-            }
-        }
-    }
-    return count;
-}
-
-void readText(Line text[], const char* filename) {
-    FILE* file = fopen(filename, "r");
+bool readText(char *text, const char* fileName) {
+    FILE *file = fopen(fileName, "r");
     if (!file) {
-        perror("File open error");
-        exit(EXIT_FAILURE);
+        perror("\nFile open error\n");
+        return FAILURE;
     }
-
-    int lineIdx = 0;
-    int charIdx = 0;
     char ch;
-
-    while ((ch = fgetc(file)) != '*' && ch != EOF) {
-        text[lineIdx][charIdx] = ch;
-        charIdx++;
-
-        if (charIdx == LINE_LEN) {
-            lineIdx++;
-            if (lineIdx >= MAX_LINES) break;
-            charIdx = 0;
-        }
-    }
-
-    while (charIdx < LINE_LEN) {
-        text[lineIdx][charIdx] = ' ';
-        charIdx++;
-    }
-
+    size_t i=0;
+    while (i < BUFFSIZE-1 && (ch = fgetc(file)) != '*' && ch != EOF)
+        text[i++] = ch;
+    text[i] = '\0';
     fclose(file);
+    return SUCCESS;
 }
 
-void printText(Line text[]) {
-    for (int i = 0; i < MAX_LINES; ++i) {
-        printf("%.*s\n", LINE_LEN, text[i]);
+size_t countOccurrences(char *text, char searchChar) {
+    size_t count=0;
+    for (size_t i=0; i<BUFFSIZE-1 && text[i]!='\0' && text[i]!=EOF; ++i)
+        if (text[i] == searchChar)
+            ++count;
+    return count;
+
+}
+
+#define FILENAME "input.txt"
+#define SEARCH_LETTER 't'
+
+int main(void) {
+    char text[BUFFSIZE];
+    if (readText(text, FILENAME) == SUCCESS) {
+        printf("Source text from file %s:\n%s\n", FILENAME, text);
+        printf("The character '%c' appears %zu times.\n",
+               SEARCH_LETTER, countOccurrences(text, SEARCH_LETTER));
+    } else {
+        printf("Failed to read text from the file.\n");
     }
-}
-
-int main() {
-    readText(Text, "input.txt");
-
-    printf("Text:\n");
-    printText(Text);
-
-    char target = 'e';
-    int totalCount = countOccurrences(Text, target);
-    printf("Character '%c' appears %d time(s)\n", target, totalCount);
-
     return EXIT_SUCCESS;
 }
