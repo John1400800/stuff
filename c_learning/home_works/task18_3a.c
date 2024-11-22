@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -32,6 +33,25 @@ size_t countOccurrences(char *text, char searchChar) {
     return count;
 
 }
+#ifndef isspace
+#define isspace(c) (((c) >= 9 && (c) <= 13) || (c) == 32)
+#endif
+
+void wrap_str(char *start_linep, int lim) {
+    int islastspaces = 0;
+    char *curr_posp;
+    for (curr_posp = start_linep; *curr_posp != '\0'; ++curr_posp) {
+        if (isspace(*curr_posp))
+            islastspaces = 1;
+        if (curr_posp - start_linep >= lim && islastspaces) {
+            while (!isspace(*curr_posp))
+                --curr_posp;
+            *curr_posp++ = '\n';
+            start_linep = curr_posp;
+            islastspaces = 0;
+        }
+    }
+}
 
 #define FILENAME "input.txt"
 #define SEARCH_LETTER 't'
@@ -39,6 +59,7 @@ size_t countOccurrences(char *text, char searchChar) {
 int main(void) {
     char text[BUFFSIZE];
     if (readText(text, FILENAME)) {
+        wrap_str(text, 30);
         printf("Source text from file %s:\n%s\n", FILENAME, text);
         printf("The character '%c' appears %zu times.\n",
                SEARCH_LETTER, countOccurrences(text, SEARCH_LETTER));
