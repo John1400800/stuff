@@ -564,14 +564,14 @@ ___
 
 
 # Далнейшее изучение по теме (и используемые источники информации)
-<https://youtu.be/WRCwciJ5MTE?si=7abukqak4n90knBG>
-<https://youtu.be/_x9K9_q2ZXE?si=1b1MeF0O2UUJvP2d>
-<https://youtu.be/-p9lvvV8F-w?si=J7LSGOP2NbTrNQnA>
-<https://en.cppreference.com/w/cpp/language/modules>
-<https://habr.com/ru/companies/otus/articles/575954/>
-<https://cpp-kt.github.io/cpp-notes/32_modules.html>
-<https://learn.microsoft.com/ru-ru/cpp/cpp/modules-cpp?view=msvc-170>
-<https://releases.llvm.org/18.1.4/tools/clang/docs/StandardCPlusPlusModules.html>
+- <https://youtu.be/WRCwciJ5MTE?si=7abukqak4n90knBG>
+- <https://youtu.be/_x9K9_q2ZXE?si=1b1MeF0O2UUJvP2d>
+- <https://youtu.be/-p9lvvV8F-w?si=J7LSGOP2NbTrNQnA>
+- <https://en.cppreference.com/w/cpp/language/modules>
+- <https://habr.com/ru/companies/otus/articles/575954/>
+- <https://cpp-kt.github.io/cpp-notes/32_modules.html>
+- <https://learn.microsoft.com/ru-ru/cpp/cpp/modules-cpp?view=msvc-170>
+- <https://releases.llvm.org/18.1.4/tools/clang/docs/StandardCPlusPlusModules.html>
 
 ___
 
