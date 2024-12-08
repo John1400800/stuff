@@ -1,11 +1,12 @@
+#include <stddef.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-// #define FILENAME "input.txt"
-#define MAX_LINE_LENGTH 1024
+#define BUFFER_SIZE 1024
+#define MAX_LINE_LENGTH 3
 
 typedef struct {
     char **lines; // dynamic array of 'char*' - lines
@@ -13,7 +14,9 @@ typedef struct {
     size_t maxLines;
 } TextLines;
 
-bool readTextFromFile(TextLines *lines, FILE *file) {
+void freeTextLines(TextLines *lines);
+
+bool readTextFromFile(TextLines *lines, FILE *file, size_t maxLineLength) {
     if (!lines->lines) {
         lines->numLines = 0;
         lines->maxLines = 10;
@@ -21,25 +24,55 @@ bool readTextFromFile(TextLines *lines, FILE *file) {
     }
     if (!lines->lines)
         return false;
-    char buffer[MAX_LINE_LENGTH];
+
+    char buffer[BUFFER_SIZE];
     while (fgets(buffer, sizeof(buffer), file)) {
-        if (lines->numLines >= lines->maxLines) {
-            size_t newMaxLines = lines->maxLines * 2;
-            char **newLines = realloc(lines->lines, newMaxLines * sizeof(char *));
-            if (!newLines) {
-                free(lines->lines);
+        size_t len = strlen(buffer);
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        size_t start = 0;
+        while (start < len) {
+            size_t end = start + maxLineLength;
+            if (end >= len) {
+                end = len;
+            } else {
+                size_t spacePos = end;
+                while (spacePos > start && buffer[spacePos] != ' ') {
+                    --spacePos;
+                }
+                if (spacePos > start) {
+                    end = spacePos;
+                }
+            }
+
+            size_t chunkLength = end - start;
+            char *lineChunk = malloc(chunkLength + 1);
+            if (!lineChunk) {
+                freeTextLines(lines);
                 return false;
             }
-            lines->lines = newLines;
-            lines->maxLines = newMaxLines;
+            strncpy(lineChunk, buffer + start, chunkLength);
+            lineChunk[chunkLength] = '\0';
+
+            if (lines->numLines >= lines->maxLines) {
+                size_t newMaxLines = lines->maxLines * 2;
+                char **newLines = realloc(lines->lines, newMaxLines * sizeof(char *));
+                if (!newLines) {
+                    freeTextLines(lines);
+                    return false;
+                }
+                lines->lines = newLines;
+                lines->maxLines = newMaxLines;
+            }
+
+            lines->lines[lines->numLines] = lineChunk;
+            ++lines->numLines;
+
+            start = end;
+            while (start < len && buffer[start] == ' ') {
+                ++start;
+            }
         }
-        buffer[strcspn(buffer, "\n")] = '\0';
-        lines->lines[lines->numLines] = strdup(buffer);
-        if (!lines->lines[lines->numLines]) {
-            free(lines->lines);
-            return false;
-        }
-        ++lines->numLines;
     }
     return true;
 }
@@ -66,32 +99,35 @@ void printTextLines(const TextLines *lines) {
         printf("%zu: %s\n", i, lines->lines[i]);
 }
 
-int main(void) {
-#ifndef FILENAME
-    printf("Enter the name of the file to read: ");
+int32_t main(int32_t argc, const char **argv) {
     char filename[256];
-    if (!fgets(filename, sizeof(filename), stdin)) {
-        fprintf(stderr, "Error reading file name\n");
-        return EXIT_FAILURE;
+    char searchChar;
+    if (argc >= 2) {
+        strcpy(filename, argv[1]);
+    } else {
+        printf("Enter the name of the file to read: ");
+        if (!fgets(filename, sizeof(filename), stdin)) {
+            fprintf(stderr, "Error reading file name\n");
+            return EXIT_FAILURE;
+        }
+        filename[strcspn(filename, "\n")] = '\0';
     }
-    filename[strcspn(filename, "\n")] = '\0';
     FILE *file = fopen(filename, "r");
-#else
-    const char *filename = FILENAME;
-    FILE *file = fopen(FILENAME, "r");
-#endif
     if (!file) {
         fprintf(stderr, "Could not open file %s\n", filename);
         return EXIT_FAILURE;
     }
     TextLines lines = { NULL };
-    if (readTextFromFile(&lines, file)) {
+    if (readTextFromFile(&lines, file, MAX_LINE_LENGTH)) {
         printTextLines(&lines);
-        printf("Enter a character to count occurrences of: ");
-        char searchChar;
-        if (scanf(" %c", &searchChar) != 1) {
-            fprintf(stderr, "Error reading character\n");
-            return EXIT_FAILURE;
+        if (argc == 3) {
+            searchChar = argv[2][0];
+        } else {
+            printf("Enter a character to count occurrences of: ");
+            if (scanf(" %c", &searchChar) != 1) {
+                fprintf(stderr, "Error reading character\n");
+                return EXIT_FAILURE;
+            }
         }
         printf("the character '%c' occurs %zu times\n", searchChar,
                countOccurrences(&lines, searchChar));
