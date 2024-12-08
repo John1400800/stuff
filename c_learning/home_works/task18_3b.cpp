@@ -1,20 +1,16 @@
-#include <cstdlib>
-#include <cstdint>
 #include <cassert>
-#include <string>
 #include <fstream>
 #include <sstream>
+#include <string>
+#include <stdexcept>
 #include <iostream>
 
 constexpr bool IS_RELEASE_VERSION{ true };
-constexpr const char *FILENAME{ "input.txt" };
-constexpr char SEARCH_SYMBOL{ 't' };
 
 enum exitState : bool {
     FAILURE = false,
     SUCCESS = true
 };
-
 
 std::string readFile(const char *filename) {
     std::ifstream file(filename);
@@ -31,7 +27,7 @@ std::string readFile(const char *filename) {
 void strWrap(std::string& str, size_t maxStrLen) {
     size_t strLen{ 1 };
     size_t lastWhitespaceIdx{ 0 };
-    for (size_t i{ 0 }; i<str.length(); ++i, ++strLen) {
+    for (size_t i{ 0 }; i < str.length(); ++i, ++strLen) {
         if (str[i] == ' ')
             lastWhitespaceIdx = i;
         if (strLen > maxStrLen && lastWhitespaceIdx) {
@@ -40,7 +36,6 @@ void strWrap(std::string& str, size_t maxStrLen) {
         } else if (str[i] == '\n')
             str[i] = ' ';
     }
-
 }
 
 size_t countOccurrences(const std::string& str, char search) {
@@ -51,14 +46,28 @@ size_t countOccurrences(const std::string& str, char search) {
     return count;
 }
 
+int main() {
+    std::string filename;
+    std::cout << "Enter the name of the file to read: ";
+    std::getline(std::cin, filename);
 
-int main(int32_t, const char**) {
-    std::string fileContent{ readFile(FILENAME) };
-    strWrap(fileContent, 30);
-    std::cout << "Source text from file" << FILENAME << ":\n"
-        << fileContent << '\n'
-        << "The character " << SEARCH_SYMBOL << " appears " << countOccurrences(fileContent, SEARCH_SYMBOL) << " times.\n";
+    char searchSymbol;
+    std::cout << "Enter the character to search for: ";
+    std::cin >> searchSymbol;
+
+    try {
+        std::string fileContent{ readFile(filename.c_str()) };
+
+        strWrap(fileContent, 30);
+
+        std::cout << "Source text from file " << filename << ":\n"
+                  << fileContent << '\n'
+                  << "The character '" << searchSymbol << "' appears "
+                  << countOccurrences(fileContent, searchSymbol) << " times.\n";
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+
     return EXIT_SUCCESS;
 }
-
-
